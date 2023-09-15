@@ -1,10 +1,11 @@
 ﻿namespace LoginPractice.Models.Dto
 {
-    public class LoginRequestDTO
+    public class VerifyOtpRequestDTO
     {
         public string Email { get; set; }    
 
-        public string Password { get; set; }
+        public string Otp { get; set; }
+
 
     }
 }

@@ -1,7 +1,9 @@
 using LoginPractice;
 using LoginPractice.Data;
+using LoginPractice.Helper;
 using LoginPractice.Repository;
 using LoginPractice.Repository.IRepository;
+using LoginPractice.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -20,8 +22,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(2); // Set your desired session timeout
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 builder.Services.AddScoped<IPersonalDetailsRepository, PersonalDetailsRepository>();
 // Add services to the container.
 
@@ -104,8 +115,10 @@ builder.Services.AddSwaggerGen(options =>
 
     app.UseCors();
     app.UseHttpsRedirection();
+    app.UseSession();
 
-    app.UseAuthentication();
+
+app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();

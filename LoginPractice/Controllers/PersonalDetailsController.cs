@@ -13,8 +13,7 @@ namespace LoginPractice.Controllers
 {
     [Route("api/PersonalDetails")]
     [ApiController]
-   
-    
+ 
     public class PersonalDetailsController : Controller
     {
 
@@ -31,6 +30,7 @@ namespace LoginPractice.Controllers
         }
 
         [HttpGet]
+        [Authorize]
 
         public async Task<ActionResult<APIResponse>> PersonalDetails()
         {
